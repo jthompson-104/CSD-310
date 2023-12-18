@@ -285,15 +285,15 @@ INSERT INTO Wine (WineID, WineName, DistributorID) VALUES
 (307, 'Chardonnay A', 202),
 (308, 'Chardonnay B', 201);
 
-INSERT INTO SalesOrder (WineID, QuantitySold) VALUES
-(308, 40),
-(305, 30),
-(301, 50),
-(307, 25),
-(306, 35),
-(302, 20),
-(304, 15),
-(303, 45);
+INSERT INTO SalesOrder (WineID, QuantitySold, OrderDate) VALUES
+(308, 40, '2023-11-02'),
+(305, 30, '2023-11-04'),
+(301, 50, '2023-11-16'),
+(307, 25, '2023-11-24'),
+(306, 35, '2023-11-18'),
+(302, 20, '2023-11-06'),
+(304, 15, '2023-11-29'),
+(303, 45, '2023-11-13');
 
 -- Sample data for JobPosition
 INSERT INTO JobPosition (JobPositionID, PositionTitle) VALUES

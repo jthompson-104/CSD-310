@@ -1,6 +1,6 @@
 from mysql.connector import connect, Error, errorcode
 
-script_path = "charlie_db_script_v2.sql"
+script_path = "charlie_db_script_v3.sql"
 root_password = input("Enter your MySQL root password: ")
 
 # Specify MySQL connection details

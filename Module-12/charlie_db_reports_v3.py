@@ -1,5 +1,6 @@
 from mysql.connector import connect, Error, errorcode
 from prettytable import PrettyTable
+import datetime
 
 root_password = input("Enter your MySQL root password: ")
 
@@ -28,8 +29,10 @@ try:
             I.Quantity,
             I.ExpectedDeliveryDate,
             I.ActualDeliveryDate,
-            CASE WHEN I.ActualDeliveryDate > I.ExpectedDeliveryDate THEN 'Delayed'
-                 WHEN I.ActualDeliveryDate < I.ExpectedDeliveryDate THEN 'Early'
+            CASE WHEN I.ActualDeliveryDate > I.ExpectedDeliveryDate 
+                 THEN CONCAT (' Delayed: ', DATEDIFF(I.ActualDeliveryDate, I.ExpectedDeliveryDate), ' Days')
+                 WHEN I.ActualDeliveryDate < I.ExpectedDeliveryDate 
+                 THEN CONCAT (' Early: ', DATEDIFF(I.ExpectedDeliveryDate, I.ActualDeliveryDate), ' Days')
                  ELSE 'On Time' END AS DeliveryStatus
         FROM 
             Supplier S
@@ -39,6 +42,7 @@ try:
         cursor.execute(supplier_delivery_report)
         result_supplier_delivery = cursor.fetchall()
         print("\n-- Supplier Delivery Performance Report --")
+        print(f"-- Time of report: {datetime.datetime.now()} --")
         supplier_table = PrettyTable(["Supplier", "Item", "Quantity", "Expected Delivery Date", "Actual Delivery Date", "Delivery Status"])
         supplier_table.add_rows(result_supplier_delivery)
         print(supplier_table)
@@ -51,23 +55,25 @@ try:
             W.DistributorID,
             D.DistributorName,
             SUM(SO.QuantitySold) AS TotalQuantitySold,
-            SUM(SO.QuantitySold * W.Price) AS TotalRevenue
+            SO.OrderDate AS 'November 2023',
+            CONCAT('$', SUM(SO.QuantitySold * W.Price)) AS TotalRevenue
         FROM
             Wine W
         JOIN
             SalesOrder SO ON W.WineID = SO.WineID
         JOIN
             Distributor D ON W.DistributorID = D.DistributorID
+        WHERE  
+            MONTH(SO.OrderDate) = 11 AND YEAR(SO.OrderDate) = 2023
         GROUP BY
             W.WineID,
-            W.WineName,
-            W.DistributorID,
-            D.DistributorName;
+            SO.OrderDate 
         """
         cursor.execute(wine_sales_report)
         result_wine_sales = cursor.fetchall()
         print("\n-- Wine Sales Report --")
-        wine_table = PrettyTable(["Wine ID", "Wine Name", "Distributor ID", "Distributor Name", "Total Quantity Sold", "Total Revenue"])
+        print(f"-- Time of report: {datetime.datetime.now()} --")
+        wine_table = PrettyTable(["Wine ID", "Wine Name", "Distributor ID", "Distributor Name", "Total Quantity Sold", "November 2023", "Total Revenue"])
         wine_table.add_rows(result_wine_sales)
         print(wine_table)
 
@@ -90,6 +96,7 @@ try:
         cursor.execute(employee_work_hours_report)
         result_employee_work_hours = cursor.fetchall()
         print("\n-- Employee Work Hours Report --")
+        print(f"-- Time of report: {datetime.datetime.now()} --")
         employee_table = PrettyTable(["Employee", "Q1", "Q2", "Q3", "Q4", "Total Hours Worked"])
         employee_table.add_rows(result_employee_work_hours)
         print(employee_table)
